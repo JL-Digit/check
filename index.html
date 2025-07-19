@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check!</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Écran de connexion */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .login-card h1 {
+            color: #4CAF50;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Interface principale */
+        .main-app {
+            display: none;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            min-height: 90vh;
+        }
+
+        .app-header {
+            background: #4CAF50;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .app-header h1 {
+            font-size: 1.5rem;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .tabs-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+            overflow-x: auto;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            min-width: max-content;
+        }
+
+        .tab {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+
+        .tab:hover:not(.active) {
+            border-color: #4CAF50;
+            transform: translateY(-2px);
+        }
+
+        .add-tab-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .add-tab-btn:hover {
+            background: #1976D2;
+            transform: translateY(-2px);
+        }
+
+        .content {
+            padding: 40px;
+            text-align: center;
+            min-height: 400px;
+        }
+
+        .big-button {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 30px 40px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+            min-width: 250px;
+        }
+
+        .big-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(76, 175, 80, 0.4);
+        }
+
+        .big-button:active {
+            transform: translateY(-1px);
+        }
+
+        .export-btn {
+            background: #FF9800;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 0 10px 20px 0;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .export-btn:hover {
+            background: #F57C00;
+            transform: translateY(-2px);
+        }
+
+        .clear-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 0 5px 20px 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .clear-btn:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+        }
+
+        .delete-tab-btn {
+            background: #9c27b0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 0 5px 20px 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .delete-tab-btn:hover {
+            background: #7b1fa2;
+            transform: translateY(-2px);
+        }
+
+        .records-list {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            text-align: left;
+        }
+
+        .record-item {
+            background: white;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            font-family: 'Courier New', monospace;
+        }
+
+        .no-records {
+            color: #666;
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .welcome-message {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .login-card {
+                padding: 30px 20px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .big-button {
+                padding: 25px 30px;
+                font-size: 1.1rem;
+                min-width: 200px;
+            }
+
+            .tabs-container {
+                padding: 15px;
+            }
+
+            .app-header {
+                padding: 15px;
+            }
+
+            .app-header h1 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .big-button {
+                padding: 20px 25px;
+                font-size: 1rem;
+                min-width: 180px;
+            }
+
+            .login-card h1 {
+                font-size: 1.7rem;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Scrollbar personnalisée */
+        .records-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .records-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .records-list::-webkit-scrollbar-thumb {
+            background: #4CAF50;
+            border-radius: 10px;
+        }
+
+        .records-list::-webkit-scrollbar-thumb:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Écran de connexion -->
+        <div id="loginScreen" class="login-screen">
+            <div class="login-card fade-in">
+                <h1>✅ Check!</h1>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username">Nom d'utilisateur</label>
+                        <input type="text" id="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pin">Code PIN (4 chiffres)</label>
+                        <input type="password" id="pin" maxlength="4" pattern="[0-9]{4}" required>
+                    </div>
+                    <button type="submit" class="btn">Se connecter / Créer un compte</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Interface principale -->
+        <div id="mainApp" class="main-app">
+            <div class="app-header">
+                <h1>✅ Check!</h1>
+                <button id="logoutBtn" class="logout-btn">Déconnexion</button>
+            </div>
+
+            <div class="tabs-container">
+                <div class="tabs" id="tabsContainer">
+                    <button class="add-tab-btn" id="addTabBtn">+ Nouvelle habitude</button>
+                </div>
+            </div>
+
+            <div class="content" id="content">
+                <div class="welcome-message">
+                    Bienvenue ! Créez votre première habitude pour commencer le suivi.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class HabitTracker {
+            constructor() {
+                this.currentUser = null;
+                this.currentTab = null;
+                this.data = this.loadData();
+                this.init();
+            }
+
+            init() {
+                this.bindEvents();
+                this.checkAuth();
+            }
+
+            bindEvents() {
+                // Événements de connexion
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleLogin();
+                });
+
+                // Événements de l'interface principale
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    this.logout();
+                });
+
+                document.getElementById('addTabBtn').addEventListener('click', () => {
+                    this.addNewHabit();
+                });
+            }
+
+            checkAuth() {
+                const userData = localStorage.getItem('habitTracker_user');
+                if (userData) {
+                    this.currentUser = JSON.parse(userData);
+                    this.showMainApp();
+                } else {
+                    this.showLoginScreen();
+                }
+            }
+
+            handleLogin() {
+                const username = document.getElementById('username').value.trim();
+                const pin = document.getElementById('pin').value.trim();
+
+                if (username && pin && pin.length === 4) {
+                    this.currentUser = { username, pin };
+                    localStorage.setItem('habitTracker_user', JSON.stringify(this.currentUser));
+                    this.showMainApp();
+                } else {
+                    alert('Veuillez saisir un nom d\'utilisateur et un code PIN à 4 chiffres.');
+                }
+            }
+
+            logout() {
+                localStorage.removeItem('habitTracker_user');
+                this.currentUser = null;
+                this.currentTab = null;
+                this.showLoginScreen();
+            }
+
+            showLoginScreen() {
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('username').value = '';
+                document.getElementById('pin').value = '';
+            }
+
+            showMainApp() {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainApp').style.display = 'block';
+                this.loadTabs();
+                this.updateContent();
+            }
+
+            loadData() {
+                const data = localStorage.getItem('habitTracker_data');
+                return data ? JSON.parse(data) : { trackers: {} };
+            }
+
+            saveData() {
+                localStorage.setItem('habitTracker_data', JSON.stringify(this.data));
+            }
+
+            loadTabs() {
+                const tabsContainer = document.getElementById('tabsContainer');
+                const addBtn = document.getElementById('addTabBtn');
+                
+                // Supprimer tous les onglets existants sauf le bouton d'ajout
+                const existingTabs = tabsContainer.querySelectorAll('.tab');
+                existingTabs.forEach(tab => tab.remove());
+
+                // Ajouter les onglets des habitudes
+                Object.keys(this.data.trackers).forEach(habitName => {
+                    this.createTab(habitName);
+                });
+
+                // Si aucun onglet actif et qu'il y a des habitudes, activer le premier
+                if (!this.currentTab && Object.keys(this.data.trackers).length > 0) {
+                    this.currentTab = Object.keys(this.data.trackers)[0];
+                }
+            }
+
+            createTab(habitName) {
+                const tabsContainer = document.getElementById('tabsContainer');
+                const addBtn = document.getElementById('addTabBtn');
+                
+                const tab = document.createElement('button');
+                tab.className = 'tab';
+                tab.textContent = habitName;
+                tab.addEventListener('click', () => {
+                    this.setActiveTab(habitName);
+                });
+
+                tabsContainer.insertBefore(tab, addBtn);
+
+                if (habitName === this.currentTab) {
+                    tab.classList.add('active');
+                }
+            }
+
+            setActiveTab(habitName) {
+                this.currentTab = habitName;
+                
+                // Mettre à jour l'apparence des onglets
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('active');
+                    if (tab.textContent === habitName) {
+                        tab.classList.add('active');
+                    }
+                });
+
+                this.updateContent();
+            }
+
+            addNewHabit() {
+                const habitName = prompt('Nom de la nouvelle habitude :');
+                if (habitName && habitName.trim()) {
+                    const trimmedName = habitName.trim();
+                    if (!this.data.trackers[trimmedName]) {
+                        this.data.trackers[trimmedName] = [];
+                        this.saveData();
+                        this.createTab(trimmedName);
+                        this.setActiveTab(trimmedName);
+                    } else {
+                        alert('Cette habitude existe déjà !');
+                    }
+                }
+            }
+
+            updateContent() {
+                const content = document.getElementById('content');
+                
+                if (!this.currentTab) {
+                    content.innerHTML = `
+                        <div class="welcome-message">
+                            Bienvenue ! Créez votre première habitude pour commencer le suivi.
+                        </div>
+                    `;
+                    return;
+                }
+
+                const records = this.data.trackers[this.currentTab] || [];
+                
+                content.innerHTML = `
+                    <button class="big-button" id="actionBtn">
+                        ${this.getActionText(this.currentTab)}
+                    </button>
+                    <br>
+                    <div style="display: flex; justify-content: center; flex-wrap: wrap;">
+                        <button class="export-btn" id="exportBtn">
+                            📊 Exporter (CSV)
+                        </button>
+                        <button class="clear-btn" id="clearBtn">
+                            🗑️ Nettoyer les données
+                        </button>
+                        <button class="delete-tab-btn" id="deleteTabBtn">
+                            ❌ Supprimer l'onglet
+                        </button>
+                    </div>
+                    <div class="records-list" id="recordsList">
+                        ${this.renderRecords(records)}
+                    </div>
+                `;
+
+                // Bind events pour le contenu
+                document.getElementById('actionBtn').addEventListener('click', () => {
+                    this.recordAction();
+                });
+
+                document.getElementById('exportBtn').addEventListener('click', () => {
+                    this.exportData();
+                });
+
+                document.getElementById('clearBtn').addEventListener('click', () => {
+                    this.clearData();
+                });
+
+                document.getElementById('deleteTabBtn').addEventListener('click', () => {
+                    this.deleteTab();
+                });
+            }
+
+            getActionText(habitName) {
+                return habitName;
+            }
+
+            recordAction() {
+                if (!this.currentTab) return;
+
+                const timestamp = new Date().toISOString();
+                if (!this.data.trackers[this.currentTab]) {
+                    this.data.trackers[this.currentTab] = [];
+                }
+                
+                this.data.trackers[this.currentTab].unshift(timestamp);
+                this.saveData();
+                this.updateContent();
+
+                // Animation de feedback
+                const btn = document.getElementById('actionBtn');
+                btn.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    btn.style.transform = 'scale(1)';
+                }, 150);
+            }
+
+            renderRecords(records) {
+                if (records.length === 0) {
+                    return '<div class="no-records">Aucun enregistrement pour le moment</div>';
+                }
+
+                return records.map(timestamp => {
+                    const date = new Date(timestamp);
+                    const formatted = date.toLocaleDateString('fr-FR') + ' à ' + 
+                                    date.toLocaleTimeString('fr-FR');
+                    return `<div class="record-item">${formatted}</div>`;
+                }).join('');
+            }
+
+            deleteTab() {
+                if (!this.currentTab) return;
+
+                const confirmMessage = `Êtes-vous sûr de vouloir supprimer définitivement l'onglet "${this.currentTab}" ?\n\nToutes les données associées seront perdues. Cette action est irréversible.`;
+                
+                if (confirm(confirmMessage)) {
+                    // Supprimer l'onglet des données
+                    delete this.data.trackers[this.currentTab];
+                    this.saveData();
+                    
+                    // Déterminer le nouvel onglet actif
+                    const remainingTabs = Object.keys(this.data.trackers);
+                    if (remainingTabs.length > 0) {
+                        this.currentTab = remainingTabs[0];
+                    } else {
+                        this.currentTab = null;
+                    }
+                    
+                    // Recharger l'interface
+                    this.loadTabs();
+                    this.updateContent();
+                }
+            }
+
+            clearData() {
+                if (!this.currentTab) return;
+
+                const confirmMessage = `Êtes-vous sûr de vouloir supprimer toutes les données de l'habitude "${this.currentTab}" ?\n\nCette action est irréversible.`;
+                
+                if (confirm(confirmMessage)) {
+                    this.data.trackers[this.currentTab] = [];
+                    this.saveData();
+                    this.updateContent();
+                    
+                    // Feedback visuel
+                    const btn = document.getElementById('clearBtn');
+                    const originalText = btn.textContent;
+                    btn.textContent = '✅ Nettoyé !';
+                    btn.style.background = '#4CAF50';
+                    
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '#f44336';
+                    }, 2000);
+                }
+            }
+
+            exportData() {
+                if (!this.currentTab || !this.data.trackers[this.currentTab]) return;
+
+                const records = this.data.trackers[this.currentTab];
+                let csvContent = 'Date,Heure,Timestamp\n';
+                
+                records.forEach(timestamp => {
+                    const date = new Date(timestamp);
+                    const dateStr = date.toLocaleDateString('fr-FR');
+                    const timeStr = date.toLocaleTimeString('fr-FR');
+                    csvContent += `"${dateStr}","${timeStr}","${timestamp}"\n`;
+                });
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `export_${this.currentTab.replace(/[^a-z0-9]/gi, '_')}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        }
+
+        // Initialiser l'application
+        document.addEventListener('DOMContentLoaded', () => {
+            new HabitTracker();
+        });
+
+        // Enregistrer le Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => console.log('Service Worker enregistré avec succès:', registration))
+                    .catch(error => console.log('Échec de l\'enregistrement du Service Worker:', error));
+            });
+        }
+    </script>
+</body>
+</html>
+
